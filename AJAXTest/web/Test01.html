@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajax Test</title>
+    <script type="text/javascript" src="js/jquery-3.4.1.js"></script>
+</head>
+
+<body onload="listProvince()">
+
+    <select id="provinceList" onchange="listCity(this.value)">
+
+    </select>
+
+    <span id="cityListSpan"></span>
+
+
+</body>
+
+    <script>
+        listProvince = function () {
+            $.post(
+                "province.do",
+                function (jsonArray) {
+                    //alert(jsonArray)
+                    for(var i = 0;i<jsonArray.length;i++){
+                        var jsonObj = jsonArray[i]
+                        //alert(jsonObj.code)
+                        var $option = $("<option></option>")
+                        $option.val(jsonObj.code)
+                        $option.text(jsonObj.name)
+                        $("#provinceList").append($option)
+                    }
+                },
+                "json"
+            )
+
+            $.post(
+                "city.do",
+                "code=001",
+                function (jsonArray) {
+                    $("#cityListSpan").text("")
+                    //alert(jsonArray)
+                    var $select = $("<select></select>")
+                    for(var i = 0;i<jsonArray.length;i++){
+                        var jsonObj = jsonArray[i]
+                        var $option = $("<option></option>")
+                        $option.val(jsonObj.code)
+                        $option.text(jsonObj.name)
+                        $select.append($option)
+                        $("#cityListSpan").append($select)
+                    }
+                },
+                "json"
+            )
+        }
+
+        listCity = function (value) {
+            $.post(
+                "city.do",
+                "code="+value,
+                function (jsonArray) {
+                    $("#cityListSpan").text("")
+                    //alert(jsonArray)
+                    var $select = $("<select></select>")
+                    for(var i = 0;i<jsonArray.length;i++){
+                        var jsonObj = jsonArray[i]
+                        var $option = $("<option></option>")
+                        $option.val(jsonObj.code)
+                        $option.text(jsonObj.name)
+                        $select.append($option)
+                        $("#cityListSpan").append($select)
+                    }
+                },
+                "json"
+            )
+        }
+    </script>
+</html>

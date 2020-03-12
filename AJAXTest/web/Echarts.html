@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Echarts</title>
+    <script type="text/javascript" src="js/jquery-3.4.1.js"></script>
+    <script type="text/javascript" src="js/echarts.min.js"></script>
+</head>
+
+
+<body>
+    <br><br><br><br><br><br>
+    <center>
+        请选择部门：
+        <select id="deptSelect" onchange="deptSelect(this.value)">
+
+            <option value="10">ACCOUNTING</option>
+            <option value="20">RESEARCH</option>
+            <option value="30">SALES</option>
+            <option value="40">OPERATIONS</option>
+
+        </select>
+        <br><br>
+    </center>
+    <table align="center" border="1px" width="31%" height="66px" id="deptTable">
+        <tr>
+            <td>部门名称</td>
+            <td>职位名称</td>
+            <td>职位人数</td>
+        </tr>
+
+    </table>
+    <br>
+    <center>
+        <div id="main" style="width: 600px;height:400px;"></div>
+    </center>
+</body>
+
+<script type="text/javascript">
+
+
+
+    deptSelect = function (value) {
+        var json;
+            $.post(
+            "/dept.do",
+            {"deptno": value},
+            function (jsonArray) {
+                var length = jsonArray.length
+                //alert(jsonArray)
+                $("tr:gt(0)").remove()
+                for(var i = 0;i<jsonArray.length;i++){
+                    var jsonObj = jsonArray[i]
+                    //alert(jsonObj.dname)
+                    var $td2 = $("<td></td>")
+                    var $td3 = $("<td></td>")
+                    var $tr = $("<tr></tr>")
+
+                    if(i == 0){
+                        var $td1 = $("<td></td>")
+                        $td1.attr("rowspan",length)
+                        $td1.text(jsonObj.dname)
+                        $tr.append($td1)
+                    }
+
+                    $td2.text(jsonObj.job)
+                    $tr.append($td2)
+
+                    $td3.text(jsonObj.no)
+                    $tr.append($td3)
+
+                    $("#deptTable").append($tr)
+
+                }
+                UpdateEcharts(jsonArray)
+            },
+            "json"
+        )
+
+
+    }
+
+
+
+    function UpdateEcharts(jsonArray) {
+        var deptName;
+        //统计当前部门下职位名称
+        var jobArray = [];
+        //统计当前部门下职位人数
+        //var jobNumArray = []; //[  1    ,   2,        3]
+
+        for(var i=0;i<jsonArray.length;i++){
+            var jsonObj = jsonArray[i];//{dname:,job:,jobNum}
+            var json = {value: jsonObj.no, name: jsonObj.job}
+            jobArray.push(json);
+            deptName = jsonObj.dname
+            //jobNumArray.push(jsonObj.jobNum);
+            //alert(json)
+        }
+        //alert(jobArray)
+
+        var myChart = echarts.init(document.getElementById('main'));
+        var option;
+
+        option = {
+        backgroundColor: '#2c343c',
+
+        title: {
+            text: deptName,
+            left: 'center',
+            top: 20,
+            textStyle: {
+                color: '#ccc'
+            }
+        },
+
+        tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)'
+        },
+
+        visualMap: {
+            show: true,
+            min: 0,
+            max: 10,
+            inRange: {
+                colorLightness: [0, 1]
+            }
+        },
+        series: [
+            {
+                name: 'Job',
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '50%'],
+
+                data: jobArray
+                //[{value: 6, name: 'blue'}]
+
+                .sort(function (a, b) { return a.value - b.value; }),
+                roseType: 'radius',
+                label: {
+                    color: 'rgba(255, 255, 255, 0.3)'
+                },
+                labelLine: {
+                    lineStyle: {
+                        color: 'rgba(255, 255, 255, 0.3)'
+                    },
+                    smooth: 0.2,
+                    length: 10,
+                    length2: 20
+                },
+                itemStyle: {
+                    color: '#c23531',
+                    shadowBlur: 200,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                },
+
+                animationType: 'scale',
+                animationEasing: 'elasticOut',
+                animationDelay: function (idx) {
+                    return Math.random() * 200;
+                }
+            }
+        ]
+    };
+        myChart.setOption(option);
+    }
+
+
+
+</script>
+</html>

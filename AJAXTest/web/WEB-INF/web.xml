@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+		  http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+           version="3.0">
+
+    <servlet>
+        <servlet-name>Province</servlet-name>
+        <servlet-class>Servlet.ProvinceServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Province</servlet-name>
+        <url-pattern>/province.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>City</servlet-name>
+        <servlet-class>Servlet.CityServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>City</servlet-name>
+        <url-pattern>/city.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>dept</servlet-name>
+        <servlet-class>Servlet.DeptNumServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>dept</servlet-name>
+        <url-pattern>/dept.do</url-pattern>
+    </servlet-mapping>
+</web-app>
